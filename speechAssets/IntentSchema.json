@@ -13,7 +13,7 @@
       "intent":"SpecifyDeviceIntent",
       "slots": [
       {
-        "name" : "Ordernal",
+        "name" : "Ordinal",
         "type": "LIST_OF_ORDENAL"
       }
      ]
