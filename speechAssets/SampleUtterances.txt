@@ -8,11 +8,11 @@ FindiPhoneIntent to alert {Item}
 FindiPhoneIntent to alert my {Item}
 FindiPhoneIntent to activate alarm on {Item}
 FindiPhoneIntent to activate alarm on my {Item}
-SpecifyDeviceIntent to find {Ordernal} {Item}
-SpecifyDeviceIntent to find {Ordernal} device
-SpecifyDeviceIntent to locate {Ordernal} {item}
-SpecifyDeviceIntent to locate the {Ordernal} device
-SpecifyDeviceIntent to find the {Ordernal} {Item}
-SpecifyDeviceIntent to find the {Ordernal} device
-SpecifyDeviceIntent to locate the {Ordernal} {item}
-SpecifyDeviceIntent to locate the {Ordernal} device
+SpecifyDeviceIntent to find {Ordinal} {Item}
+SpecifyDeviceIntent to find {Ordinal} device
+SpecifyDeviceIntent to locate {Ordinal} {item}
+SpecifyDeviceIntent to locate the {Ordinal} device
+SpecifyDeviceIntent to find the {Ordinal} {Item}
+SpecifyDeviceIntent to find the {Ordinal} device
+SpecifyDeviceIntent to locate the {Ordinal} {item}
+SpecifyDeviceIntent to locate the {Ordinal} device
