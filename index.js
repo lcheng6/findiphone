@@ -28,6 +28,7 @@ var icloud = require("find-my-iphone").findmyphone;
 var config = require('./config');
 var async = require('async');
 
+var itemToLookFor = undefined;
 
 
 var APP_ID = "amzn1.ask.skill.cee844ea-1f14-4de3-89f7-a1bebe891dd9"; //OPTIONAL: replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
@@ -38,15 +39,15 @@ var APP_ID = "amzn1.ask.skill.cee844ea-1f14-4de3-89f7-a1bebe891dd9"; //OPTIONAL:
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
  */
-var HowTo = function () {
+var FindiPhone = function () {
     AlexaSkill.call(this, APP_ID);
 };
 
 // Extend AlexaSkill
-HowTo.prototype = Object.create(AlexaSkill.prototype);
-HowTo.prototype.constructor = HowTo;
+FindiPhone.prototype = Object.create(AlexaSkill.prototype);
+FindiPhone.prototype.constructor = FindiPhone;
 
-HowTo.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
+FindiPhone.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     var speechText = "Welcome to the iPhone Finder. Locate your iDevices with commands like, find my iPhone";
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
@@ -55,7 +56,7 @@ HowTo.prototype.eventHandlers.onLaunch = function (launchRequest, session, respo
     response.ask(speechText, repromptText);
 };
 
-HowTo.prototype.intentHandlers = {
+FindiPhone.prototype.intentHandlers = {
     "FindiPhoneIntent": function (intent, session, response) {
         var itemSlot = intent.slots.Item,
             itemName = itemSlot.value;
@@ -63,9 +64,6 @@ HowTo.prototype.intentHandlers = {
         var cardTitle = "Looking for " + itemName;
         var speechOutput;
         var repromptOutput;
-
-        
-
 
         icloud.apple_id = config.iCloudUserName;
         icloud.password = config.iCloudPassword;
@@ -180,7 +178,7 @@ HowTo.prototype.intentHandlers = {
 };
 
 exports.handler = function (event, context) {
-    var howTo = new HowTo();
-    howTo.execute(event, context);
+    var FindiPhone = new FindiPhone();
+    FindiPhone.execute(event, context);
 
 };
