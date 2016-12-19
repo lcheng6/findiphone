@@ -9,6 +9,15 @@
       }
      ]
     },
+    {
+      "intent":"SpecifyDeviceIntent",
+      "slots": [
+      {
+        "name" : "Ordernal",
+        "type": "LIST_OF_ORDENAL"
+      }
+     ]
+    }
    {
       "intent": "AMAZON.HelpIntent"
     },

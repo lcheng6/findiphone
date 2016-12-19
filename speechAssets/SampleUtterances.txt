@@ -1,25 +1,12 @@
-FindiPhoneIntent find {Item}
-FindiPhoneIntent find my phone {Item}
-FindiPhoneIntent find my device {Item}
-FindiPhoneIntent find my gadget {Item}
-FindiPhoneIntent find my computer {Item}
-FindiPhoneIntent locate {Item}
-FindiPhoneIntent locate my phone {Item}
-FindiPhoneIntent locate my device {Item}
-FindiPhoneIntent locate my gadget {Item}
-FindiPhoneIntent locate my computer {Item}
-FindiPhoneIntent look for {Item}
-FindiPhoneIntent look for my phone {Item}
-FindiPhoneIntent look for my device {Item}
-FindiPhoneIntent look for my gadget {Item}
-FindiPhoneIntent look for my computer {Item}
-FindiPhoneIntent alert {Item}
-FindiPhoneIntent alert my phone {Item}
-FindiPhoneIntent alert my device {Item}
-FindiPhoneIntent alert my gadget {Item}
-FindiPhoneIntent alert my computer {Item}
-FindiPhoneIntent get {Item}
-FindiPhoneIntent get my phone {Item}
-FindiPhoneIntent get my device {Item}
-FindiPhoneIntent get my gadget {Item}
-FindiPhoneIntent get my computer {Item}
+FindiPhoneIntent to find {Item}
+FindiPhoneIntent to find my {Item}
+FindiPhoneIntent to locate {Item}
+FindiPhoneIntent to locate my {Item}
+FindiPhoneIntent to look for {Item}
+FindiPhoneIntent to look for my {Item}
+FindiPhoneIntent to alert {Item}
+FindiPhoneIntent to alert my {Item}
+FindiPhoneIntent to activate alarm on {Item}
+FindiPhoneIntent to activate alarm on my {Item}
+SpecifyDeviceIntent the {Ordernal} device
+SpecifyDeviceIntent It is the {Ordernal} device
