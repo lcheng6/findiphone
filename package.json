@@ -1,0 +1,15 @@
+{
+  "name": "findiphone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "find-my-iphone": "git://github.com/matt-kruse/find-my-iphone",
+    "async": "^2.1.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
