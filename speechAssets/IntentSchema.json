@@ -14,7 +14,7 @@
       "slots": [
       {
         "name" : "Ordinal",
-        "type": "LIST_OF_ORDENAL"
+        "type": "LIST_OF_ORDINAL"
       }
      ]
     }
