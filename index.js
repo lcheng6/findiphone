@@ -283,7 +283,7 @@ FindiPhone.prototype.intentHandlers = {
 };
 
 exports.handler = function (event, context) {
-    var FindiPhone = new FindiPhone();
-    FindiPhone.execute(event, context);
+    var findiPhone = new FindiPhone();
+    findiPhone.execute(event, context);
 
 };
