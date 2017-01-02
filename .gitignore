@@ -1,3 +1,4 @@
 .git/
 node_modules/
 config.js
+speechAssets/customSlotTypes/LIST_OF_ITEMS
