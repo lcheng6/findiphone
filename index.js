@@ -92,9 +92,9 @@ FindiPhone.prototype.intentHandlers = {
                 //gets the distance of the device from my location
   
                 var data = {
-                    "Latitude": 38.827467,
-                    "Longitude": -77.166179,
-                    "address": "4551 Sawgrass Ct. Alexandria VA, 22312"
+                    "Latitude": 38.8976763,
+                    "Longitude": -77.0365298,
+                    "address": "1600 Pennsylvania Ave NW, Washington, DC 20500"
                 };
 
                 async.waterfall([
