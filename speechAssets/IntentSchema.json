@@ -10,6 +10,15 @@
      ]
     },
     {
+      "intent": "LocateiPhoneIntent",
+      "slots": [
+      {
+        "name" : "Item",
+        "type": "LIST_OF_ITEMS"
+      }
+     ]
+    },
+    {
       "intent":"SpecifyDeviceIntent",
       "slots": [
       {
@@ -17,7 +26,7 @@
         "type": "LIST_OF_ORDINAL"
       }
      ]
-    }
+    },
    {
       "intent": "AMAZON.HelpIntent"
     },

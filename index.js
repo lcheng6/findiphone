@@ -27,9 +27,6 @@ var AlexaSkill = require('./AlexaSkill');
 
 var config = require('./config');
 var async = require('async');
-import map from 'async/map';
-
-var itemToLookFor = undefined;
 
 var APP_ID = "amzn1.ask.skill.cee844ea-1f14-4de3-89f7-a1bebe891dd9"; //OPTIONAL: replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
 
@@ -145,7 +142,7 @@ function logInAccountAndGetDevicesInfo(singleiCloudAccount, callback) {
             console.log(JSON.stringify(devices));
             callback(null, "Account " + NickName + " true");
         }
-    }
+    });
 }
                       
                       
@@ -158,9 +155,9 @@ function GetAllDeivcesFromAllAccounts2() {
 FindiPhone.prototype.intentHandlers = {
     "LocateiPhoneIntent": function (intent, session, response) {
 
-    }
+    },
     "FindiPhoneIntent": function (intent, session, resposne) {
-        var itemSlot, intent.slots.Item,
+        var itemSlot = intent.slots.Item,
             itemName = itemSlot.value;
         GetAllDeivcesFromAllAccounts2();
     },
