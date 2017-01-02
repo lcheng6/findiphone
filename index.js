@@ -22,14 +22,14 @@
 'use strict';
 
 const util = require('util');
+
 var AlexaSkill = require('./AlexaSkill');
-var recipes = require('./recipes');
-var icloud = require("find-my-iphone").findmyphone;
+
 var config = require('./config');
 var async = require('async');
+import map from 'async/map';
 
 var itemToLookFor = undefined;
-
 
 var APP_ID = "amzn1.ask.skill.cee844ea-1f14-4de3-89f7-a1bebe891dd9"; //OPTIONAL: replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
 
@@ -42,6 +42,10 @@ var APP_ID = "amzn1.ask.skill.cee844ea-1f14-4de3-89f7-a1bebe891dd9"; //OPTIONAL:
 var FindiPhone = function () {
     AlexaSkill.call(this, APP_ID);
 };
+
+var allDevicesAndInfo = {};
+//This object will contain an map of map: 
+// {"accountNickName": {"iCloudDevices": <array of iCloud Device Information, "iCloudAccount": <iCloud Account Object>}}
 
 // Extend AlexaSkill
 FindiPhone.prototype = Object.create(AlexaSkill.prototype);
@@ -56,8 +60,111 @@ FindiPhone.prototype.eventHandlers.onLaunch = function (launchRequest, session, 
     response.ask(speechText, repromptText);
 };
 
+function ValidateConfig() {
+    var errorString = null;
+    var nickNameArray = [];
+    var userNameArray = [];
+    var passwordArray = [];
+    config.iCloudAccounts.forEach(function (account) {
+        nickNameArray.push(account.NickName);
+        userNameArray.push(account.UserName);
+        passwordArray.push(account.PassWord);
+    })
+    nickNameArray.sort();
+    arrayLen = nickNameArray.length;
+    prevNickName = nickNameArray[0];
+    prevUserName  = userNameArray[0];
+
+    for (var i = 0; i<arrayLen; i++) {
+        if (nickNameArray[i] === undefined) {
+            errorString = "Nick name is undefined.";
+            break;
+        }
+        if (userNameArray[i] === undefined) { 
+            errorString = "User name is undefined";
+            break;
+        }
+        if (passwordArray[i] === undefined) {
+            errorString = "Password is undefined";
+            break;
+        }
+    }
+
+    for (var i= 1; i<arrayLen; i++) {   
+        if(prevNickName === nickNameArray[i]) {
+            errorString = "Nick Name " + prevNickName + " is repeated.";
+            break;
+        }
+        prevNickName = nickNameArray[i];
+
+        if(prevUserName === nickNameArray[i]) {
+            errorString = "User Name is repeated.";
+            break;
+        }
+        prevUserName = userNameArray[i];
+    }
+
+    return errorString;
+}
+
+
+function GetAllDevicesFromAllAccounts() {
+
+    //for each account information, I need to generate an icloud object, a devices array, 
+    config.icloudAccounts.forEach(function(account) {
+        var icloud = require("find-my-iphone").findmyphone;
+
+        allDevicesAndInfo[account.NickName]["iCloudAccount"] = icloud;
+
+        icloud.apple_id = account.iCloudUserName;
+        icloud.password = account.iCloudPassword;
+
+        icloud.getDevices(function (error, devices) {
+            if (error) {
+                allDevicesAndInfo[account.NickName]["iCloudDevices"] = undefined;
+            }else {
+                allDevicesAndInfo[account.NickName]["iCloudDevices"] = devices;
+            }
+        })
+    })
+}
+
+function logInAccountAndGetDevicesInfo(singleiCloudAccount, callback) {
+    var icloud = require("find-my-iphone").findmyphone;
+    
+    icloud.apple_id = account.iCloudUserName;
+    icloud.password = account.iCloudPassword;
+    allDevicesAndInfo[account.NickName]["iCloudAccount"] = icloud;
+    
+    icloud.getDevices(function (error, devices) {
+        if (error) {
+            allDevicesAndInfo[account.NickName]["iCloudDevices"] = undefined;
+            callback(null, "Account " + NickName + " false");
+        }else {
+            allDevicesAndInfo[account.NickName]["iCloudDevices"] = devices;
+            console.log(JSON.stringify(devices));
+            callback(null, "Account " + NickName + " true");
+        }
+    }
+}
+                      
+                      
+function GetAllDeivcesFromAllAccounts2() {
+    async.map(config.icloudAccounts, logInAccountAndGetDevicesInfo, function(error, results) {
+        console.log(results);
+    });
+}
+
 FindiPhone.prototype.intentHandlers = {
-    "FindiPhoneIntent": function (intent, session, response) {
+    "LocateiPhoneIntent": function (intent, session, response) {
+
+    }
+    "FindiPhoneIntent": function (intent, session, resposne) {
+        var itemSlot, intent.slots.Item,
+            itemName = itemSlot.value;
+        GetAllDeivcesFromAllAccounts2();
+    },
+    "FindiPhoneIntentOld": function (intent, session, response) {
         var itemSlot = intent.slots.Item,
             itemName = itemSlot.value;
 
@@ -90,6 +197,7 @@ FindiPhone.prototype.intentHandlers = {
             if (device) {
 
                 //gets the distance of the device from my location
+                //TODO: Get Alexa's local address
   
                 var data = {
                     "Latitude": 38.8976763,
@@ -98,7 +206,7 @@ FindiPhone.prototype.intentHandlers = {
                 };
 
                 async.waterfall([
-                    function getDeviceDistance (next) 
+                    /*function getDeviceDistance (next) 
                     {
                         icloud.getDistanceOfDevice(device, data.Latitude, data.Longitude, function(err, result) {
                             if (err) { 
@@ -128,8 +236,8 @@ FindiPhone.prototype.intentHandlers = {
                             data.Location = location;
                             next(null, data);
                         });
-                    },
-                    function pingDevice(data, next) {
+                    },*/
+                    function playAlarmOnDevice(data, next) {
                         icloud.alertDevice(device.id, function(err) {
                             console.log("Beep Beep " + JSON.stringify(device));
 
