@@ -105,50 +105,52 @@ function ValidateConfig() {
 }
 
 
-function GetAllDevicesFromAllAccounts() {
-
-    //for each account information, I need to generate an icloud object, a devices array, 
-    config.icloudAccounts.forEach(function(account) {
-        var icloud = require("find-my-iphone").findmyphone;
-
-        allDevicesAndInfo[account.NickName]["iCloudAccount"] = icloud;
-
-        icloud.apple_id = account.iCloudUserName;
-        icloud.password = account.iCloudPassword;
-
-        icloud.getDevices(function (error, devices) {
-            if (error) {
-                allDevicesAndInfo[account.NickName]["iCloudDevices"] = undefined;
-            }else {
-                allDevicesAndInfo[account.NickName]["iCloudDevices"] = devices;
-            }
-        })
-    })
-}
-
 function logInAccountAndGetDevicesInfo(singleiCloudAccount, callback) {
-    var icloud = require("find-my-iphone").findmyphone;
+    var fmyiphone = require("find-my-iphone");
+    var icloud = fmyiphone.findmyphone;
     
-    icloud.apple_id = account.iCloudUserName;
-    icloud.password = account.iCloudPassword;
-    allDevicesAndInfo[account.NickName]["iCloudAccount"] = icloud;
+    icloud.apple_id = singleiCloudAccount.UserName;
+    icloud.password = singleiCloudAccount.Password;
+    
+    console.log("iCloud username: " + icloud.apple_id);
+    allDevicesAndInfo[singleiCloudAccount.NickName] = {"iCloudAccount": icloud};
     
     icloud.getDevices(function (error, devices) {
         if (error) {
-            allDevicesAndInfo[account.NickName]["iCloudDevices"] = undefined;
-            callback(null, "Account " + NickName + " false");
+            allDevicesAndInfo[singleiCloudAccount.NickName]["iCloudDevices"] = undefined;
+            console.log("error found: " + error);
+            callback(null, "Account " + singleiCloudAccount.NickName + " false");
         }else {
-            allDevicesAndInfo[account.NickName]["iCloudDevices"] = devices;
-            console.log(JSON.stringify(devices));
-            callback(null, "Account " + NickName + " true");
+            allDevicesAndInfo[singleiCloudAccount.NickName]["iCloudDevices"] = devices;
+            allDevicesAndInfo[singleiCloudAccount.NickName]["UserName"] = singleiCloudAccount.UserName;
+            allDevicesAndInfo[singleiCloudAccount.NickName]["Password"] = singleiCloudAccount.Password;
+            allDevicesAndInfo[singleiCloudAccount.NickName]["NickName"] = singleiCloudAccount.NickName;
+            
+            console.log(singleiCloudAccount.NickName + " devices: " + JSON.stringify(allDevicesAndInfo[singleiCloudAccount.NickName]));
+            callback(null, "Account " + singleiCloudAccount.NickName + " true");
         }
     });
 }
+ 
+function printAllAccountInfo(singleiCloudAccount, callback) {
+    var fmyiphone = require("find-my-iphone");
+    var icloud = fmyiphone.findmyphone;
+    icloud.apple_id = singleiCloudAccount.UserName;
+    icloud.password = singleiCloudAccount.Password;
+    console.log("Account Nick Name: " + singleiCloudAccount.NickName);
+    callback(null, icloud);
+}
+
                       
-                      
-function GetAllDeivcesFromAllAccounts2() {
-    async.map(config.icloudAccounts, logInAccountAndGetDevicesInfo, function(error, results) {
+function GetAllDeivcesFromAllAccounts() {
+    console.log("Before Async Map");
+    async.mapSeries(config.iCloudAccounts, logInAccountAndGetDevicesInfo, function(error, results) {
         console.log(results);
+        if(results[0] === results[1]) {
+            console.log("icloud objects are the same");
+        }else {
+            console.log("icloud objects are not the same");
+        }
     });
 }
 
@@ -159,7 +161,8 @@ FindiPhone.prototype.intentHandlers = {
     "FindiPhoneIntent": function (intent, session, resposne) {
         var itemSlot = intent.slots.Item,
             itemName = itemSlot.value;
-        GetAllDeivcesFromAllAccounts2();
+        console.log("Within FindiPhoneIntent Block");
+        GetAllDeivcesFromAllAccounts();
     },
     "FindiPhoneIntentOld": function (intent, session, response) {
         var itemSlot = intent.slots.Item,
