@@ -118,11 +118,12 @@ function logInAccountAndGetDevicesInfo(singleiCloudAccount, callback) {
     
     console.log("iCloud username: " + namespace.icloud.apple_id);
     //allDevicesAndInfo[singleiCloudAccount.NickName] = {"iCloudAccount": namespace.icloud};
+    allDevicesAndInfo[singleiCloudAccount.NickName] = {};
  
     //put Async here for icloud login then getDevices. 
     namespace.icloud.getDevices(function (error, devices) {
         if (error) {
-            allDevicesAndInfo[singleiCloudAccount.NickName]["iCloudDevices"] = undefined;
+            //allDevicesAndInfo[singleiCloudAccount.NickName]["iCloudDevices"] = undefined;
             console.log("error found: " + error);
             
             //remove all references to find my iphone
@@ -165,7 +166,7 @@ function printAllAccountInfo(singleiCloudAccount, callback) {
 }
 
                       
-function GetAllDeivcesFromAllAccounts() {
+function GetAllDeivcesFromAllAccounts(callback) {
     console.log("Before Async Map");
     async.mapSeries(config.iCloudAccounts, logInAccountAndGetDevicesInfo, function(error, results) {
         
@@ -173,7 +174,6 @@ function GetAllDeivcesFromAllAccounts() {
         
     });
     
-
 }
 
 FindiPhone.prototype.intentHandlers = {
