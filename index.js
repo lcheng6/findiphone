@@ -106,27 +106,50 @@ function ValidateConfig() {
 
 
 function logInAccountAndGetDevicesInfo(singleiCloudAccount, callback) {
-    var fmyiphone = require("find-my-iphone");
-    var icloud = fmyiphone.findmyphone;
     
-    icloud.apple_id = singleiCloudAccount.UserName;
-    icloud.password = singleiCloudAccount.Password;
+    var namespace = {}; 
+    namespace.fmyiphone = require("find-my-iphone");
+    namespace.icloud = namespace.fmyiphone.findmyphone;
     
-    console.log("iCloud username: " + icloud.apple_id);
-    allDevicesAndInfo[singleiCloudAccount.NickName] = {"iCloudAccount": icloud};
+    namespace.icloud.apple_id = singleiCloudAccount.UserName;
+    namespace.icloud.password = singleiCloudAccount.Password;
+    namespace.icloud.message = config.message;
     
-    icloud.getDevices(function (error, devices) {
+    
+    console.log("iCloud username: " + namespace.icloud.apple_id);
+    //allDevicesAndInfo[singleiCloudAccount.NickName] = {"iCloudAccount": namespace.icloud};
+ 
+    //put Async here for icloud login then getDevices. 
+    namespace.icloud.getDevices(function (error, devices) {
         if (error) {
             allDevicesAndInfo[singleiCloudAccount.NickName]["iCloudDevices"] = undefined;
             console.log("error found: " + error);
+            
+            //remove all references to find my iphone
+
             callback(null, "Account " + singleiCloudAccount.NickName + " false");
         }else {
-            allDevicesAndInfo[singleiCloudAccount.NickName]["iCloudDevices"] = devices;
+            //allDevicesAndInfo[singleiCloudAccount.NickName]["iCloudDevices"] = devices;
             allDevicesAndInfo[singleiCloudAccount.NickName]["UserName"] = singleiCloudAccount.UserName;
             allDevicesAndInfo[singleiCloudAccount.NickName]["Password"] = singleiCloudAccount.Password;
             allDevicesAndInfo[singleiCloudAccount.NickName]["NickName"] = singleiCloudAccount.NickName;
+            allDevicesAndInfo[singleiCloudAccount.NickName]["DeviceIdAndNickNameMap"] = {};
+            
+            var devicesLen = devices.length;
+            var deviceMap= {};
+            for (var i=0; i<devicesLen; i++) {
+                var device  = devices[i];
+                var deviceNickNames = [device.name, device.modelDisplayName, device.deviceDisplayName, 
+                    singleiCloudAccount.NickName + ' ' + device.modelDisplayName, singleiCloudAccount.NickName + '\'s ' + device.modelDisplayName,
+                    singleiCloudAccount.NickName + ' ' + device.deviceDisplayName, singleiCloudAccount.NickName + '\'s ' + device.deviceDisplayName];
+                var deviceId = device["id"];
+                deviceMap[deviceId] = deviceNickNames;
+            }
+            allDevicesAndInfo[singleiCloudAccount.NickName]["DeviceIdAndNickNameMap"] = deviceMap;
             
             console.log(singleiCloudAccount.NickName + " devices: " + JSON.stringify(allDevicesAndInfo[singleiCloudAccount.NickName]));
+            
+            //remove all references to find my iphone
             callback(null, "Account " + singleiCloudAccount.NickName + " true");
         }
     });
@@ -145,13 +168,12 @@ function printAllAccountInfo(singleiCloudAccount, callback) {
 function GetAllDeivcesFromAllAccounts() {
     console.log("Before Async Map");
     async.mapSeries(config.iCloudAccounts, logInAccountAndGetDevicesInfo, function(error, results) {
-        console.log(results);
-        if(results[0] === results[1]) {
-            console.log("icloud objects are the same");
-        }else {
-            console.log("icloud objects are not the same");
-        }
+        
+        console.log("allDevicesAndInfo: " + JSON.stringify(allDevicesAndInfo));
+        
     });
+    
+
 }
 
 FindiPhone.prototype.intentHandlers = {

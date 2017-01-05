@@ -12,5 +12,6 @@ config.iCloudAccounts = [
 		"Password": "where_Is_mY_phone"
 	}
 ];
+config.message = "Alexa iPhone Finder";
 
 module.exports = config;

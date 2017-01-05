@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "find-my-iphone": "git://github.com/matt-kruse/find-my-iphone",
+    "find-my-iphone": "git://github.com/lcheng6/find-my-iphone",
     "async": "^2.1.4"
   },
   "scripts": {
