@@ -22,6 +22,7 @@
 'use strict';
 
 const util = require('util');
+var _ =  require('lodash');
 
 var AlexaSkill = require('./AlexaSkill');
 
@@ -29,7 +30,8 @@ var config = require('./config');
 var async = require('async');
 
 var APP_ID = "amzn1.ask.skill.cee844ea-1f14-4de3-89f7-a1bebe891dd9"; //OPTIONAL: replace with 'amzn1.echo-sdk-ams.app.[your-unique-value-here]';
-
+//TODO: find out what the real App ID should be.  This is a test stage application, not ready to be published; so even this 
+//APP_ID is a faker. 
 /**
  * MinecraftHelper is a child of AlexaSkill.
  * To read more about inheritance in JavaScript, see the link below.
@@ -176,6 +178,48 @@ function GetAllDeivcesFromAllAccounts(callback) {
     
 }
 
+function DownSelectDevicesWithMatchingNickNames(data, callback) {
+    //Trim the allDevicesAndInfo down to just the devices whose nickname(s) match with the intent's item
+    itemName = data["itemName"];
+    filteredDevicesAndInfo =  data["allDevicesAndInfo"];
+
+    for (var NickName in filteredDevicesAndInfo) {
+        if (filteredDevicesAndInfo.hasOwnProperty(NickName)) {
+            deviceNickNameMap = filteredDevicesAndInfo.[NickName];
+
+            for (var deviceId in deviceNickNameMap) {
+                if (deviceNickNameMap.hasOwnProperty(deviceId)) {
+                    nickNameArray = filteredDevicesAndInfo[deviceId];
+
+                    var found = false;
+                    for (var i=0; i<nickNameArray.length; i++) {
+                        if (itemName.toLowerCase() === nickNameArray[i].toLowerCase()) {
+                            found = true;
+                        }
+                    }
+                    if(!found) {
+                        delete deviceNickNameMap[deviceId];
+                    }
+                }
+            }
+            filteredDevicesAndInfo.[NickName] = deviceNickNameMap;
+        }
+    }
+
+    data["filteredDevicesAndInfo"] = filteredDevicesAndInfo;
+
+    console.log("filteredDevicesAndInfo: " + JSON.stringify(filteredDevicesAndInfo));
+
+}
+
+function AlertAllMatchingDevices(data, callback) {
+    //Alert all devices in allDevicesAndInfo
+}
+
+function GetDistanceToAllMatchingDevices(data, callback) {
+    //Get distance to all devices in allDevicesAndInfo
+}
+
 FindiPhone.prototype.intentHandlers = {
     "LocateiPhoneIntent": function (intent, session, response) {
 
@@ -184,7 +228,12 @@ FindiPhone.prototype.intentHandlers = {
         var itemSlot = intent.slots.Item,
             itemName = itemSlot.value;
         console.log("Within FindiPhoneIntent Block");
+
         GetAllDeivcesFromAllAccounts();
+        //async.waterfall([
+        //        GetAllDeivcesFromAllAccounts, 
+        //    ])
+        
     },
     "FindiPhoneIntentOld": function (intent, session, response) {
         var itemSlot = intent.slots.Item,
